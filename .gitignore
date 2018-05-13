@@ -8,3 +8,5 @@ sum.v
 phase_detection_tb.v 
 phase_detection.v 
 last_section.v 
+work
+vsim.wlf
