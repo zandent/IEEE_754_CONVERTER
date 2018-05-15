@@ -51,12 +51,12 @@ reg [`MAX_DIFF_WIDTH:0] real_a_after_shift;
 wire [first_montissa_len+second_montissa_len:0] real_b;
 wire real_a_sign_flag;
 wire real_b_sign_flag;
-assign real_a_before_shift = (exp_result_after_shift==exp_a_before_shift)? {1'b1,first_element[first_montissa_len-1:0]} : 
+assign real_a_before_shift = (exp_result_after_shift==exp_b_before_shift)? {1'b1,first_element[first_montissa_len-1:0]} : 
     {1'b1,second_element[second_montissa_len-1:0]};
-assign real_a_sign_flag = (exp_result_after_shift==exp_a_before_shift)? first_element[first_montissa_len+8] : second_element[second_montissa_len+8];
-assign real_b = (exp_result_after_shift==exp_a_before_shift)? {1'b1,second_element[second_montissa_len-1:0]} : 
+assign real_a_sign_flag = (exp_result_after_shift==exp_b_before_shift)? first_element[first_montissa_len+8] : second_element[second_montissa_len+8];
+assign real_b = (exp_result_after_shift==exp_b_before_shift)? {1'b1,second_element[second_montissa_len-1:0]} : 
     {1'b1,first_element[first_montissa_len-1:0]};
-assign real_b_sign_flag = (exp_result_after_shift==exp_a_before_shift)? second_element[second_montissa_len+8] : first_element[first_montissa_len+8]; 
+assign real_b_sign_flag = (exp_result_after_shift==exp_b_before_shift)? second_element[second_montissa_len+8] : first_element[first_montissa_len+8]; 
 
 
 //implement a decoder from 0-bit shift to MAX_DIFF_WIDTH-bit shift

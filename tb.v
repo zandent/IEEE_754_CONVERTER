@@ -67,17 +67,17 @@ u_customized_mul(
     .result       (mul_val       )
 );
 
-wire [27:0] add_sub_result;
+wire [31y:0] add_sub_result;
 custonmized_add_sub 
 #(
-    .first_montissa_len  (5  ),
-    .second_montissa_len (10 ),
-    .result_montissa_len (19 )
+    .first_montissa_len  (23 ),
+    .second_montissa_len (23 ),
+    .result_montissa_len (23 )
 )
 u_custonmized_add_sub(
-	.first_element  (14'b00111010100101  ),
-    .second_element (19'b011100011001100111 ),
-    .add_sub        (1'b0        ),
+	.first_element  (ieee_val_1 ),
+    .second_element (ieee_val_2 ),
+    .add_sub        (1'b1        ),
     .result         (add_sub_result       )
 );
 
