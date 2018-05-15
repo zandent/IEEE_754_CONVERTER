@@ -1,4 +1,4 @@
-`define MAX_DIFF_WIDTH 64 //assuming the input difference is at 64 bits as maximum
+`define MAX_DIFF_WIDTH 96 //assuming the input difference is at 64 bits as maximum
 module custonmized_add_sub #
 (
     parameter first_montissa_len,
@@ -58,6 +58,8 @@ assign real_b = (exp_result_after_shift==exp_b_before_shift)? {1'b1,second_eleme
     {1'b1,first_element[first_montissa_len-1:0]};
 assign real_b_sign_flag = (exp_result_after_shift==exp_b_before_shift)? second_element[second_montissa_len+8] : first_element[first_montissa_len+8]; 
 
+wire swap;
+assign swap = (exp_result_after_shift!=exp_b_before_shift);
 
 //implement a decoder from 0-bit shift to MAX_DIFF_WIDTH-bit shift
 always@(*) begin
@@ -142,8 +144,8 @@ u_situation_add_sub(
 	.a                (real_a_after_shift                ),
     .b                (real_b                ),
     .add_sub_flag     (add_sub     ),
-    .a_sign_flag      (real_a_sign_flag      ),
-    .b_sign_flag      (real_b_sign_flag      ),
+    .a_sign_flag      (real_a_sign_flag ^ (swap & add_sub)     ),
+    .b_sign_flag      (real_b_sign_flag ^ (swap & add_sub)     ),
     .int_result       (int_result       ),
     .result_sign_flag (int_result_sign_flag )
 );
