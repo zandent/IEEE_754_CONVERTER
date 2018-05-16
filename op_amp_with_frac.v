@@ -29,7 +29,7 @@ module op_amp_with_frac
 (
     input clk,
     input reset_n,
-    input [10:0] gain_bug,
+    //input [10:0] gain_bug,
     input [C_WIDTH -1 : 0] non_inv,
     output [31: 0] square_out, // in ieee repesentation
     output reg clk_100k
@@ -53,7 +53,7 @@ u_customized_converter_with_frac(
     .sign_flag  (1'b0  ),
     .ieee_val   (non_inv_convert   )
 );
-
+/*
 wire [31:0] ieee_gain_bug;
 customized_converter_with_frac 
 #(
@@ -66,8 +66,9 @@ u_customized_converter_with_frac_temp(
     .i_fraction (1'b0 ),
     .sign_flag  (1'b0  ),
     .ieee_val   (ieee_gain_bug   )
-);
-//sum * 100
+);*/
+
+//sum * gain
 reg [31:0]gain;
 always @(*) begin
     if(non_inv<=16'd100)

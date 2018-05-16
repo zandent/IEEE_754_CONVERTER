@@ -87,7 +87,7 @@ op_amp_with_frac opamp
 (
     .clk            (clk),
     .reset_n        (reset_n),
-    .gain_bug       (gain_bug),
+    //.gain_bug       (gain_bug),
     .non_inv        (amp_in),
     .square_out     (amp_out),
     .clk_100k       (clk_100k)
@@ -115,7 +115,7 @@ reset_n = 1'b0;
 */
 //for (integer j = 270; j<271; j=j+1) begin
 //gain_bug = j;
-for (integer i = 90; i<103; i=i+1) begin
+for (integer i = 7; i<113; i=i+10) begin
     amp_in = i;
     #100 reset_n = ~reset_n;
     #4000000;
@@ -123,8 +123,13 @@ for (integer i = 90; i<103; i=i+1) begin
 end
 //#100;
 //end
-/*
-for (integer i = 600; i<2500; i=i+300) begin
+for (integer i = 93; i<600; i=i+100) begin
+    amp_in = i;
+    #100 reset_n = ~reset_n;
+    #4000000;
+    reset_n = 1'b0;
+end
+for (integer i = 400; i<2500; i=i+300) begin
     amp_in = i;
     #100 reset_n = ~reset_n;
     #4000000;
@@ -136,7 +141,7 @@ for (integer i = 2200; i<65535; i=i+5000) begin
     #100 reset_n = ~reset_n;
     #4000000;
     reset_n = 1'b0;
-end*/
+end
 //#1500  reset_n = ~reset_n;
 
 $stop();
