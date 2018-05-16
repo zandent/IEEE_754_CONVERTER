@@ -126,20 +126,20 @@ end
 for (integer i = 93; i<600; i=i+100) begin
     amp_in = i;
     #100 reset_n = ~reset_n;
-    #4000000;
+    #2000000;
     reset_n = 1'b0;
 end
 for (integer i = 400; i<2500; i=i+300) begin
     amp_in = i;
     #100 reset_n = ~reset_n;
-    #4000000;
+    #2000000;
     reset_n = 1'b0;
 end
 
 for (integer i = 2200; i<65535; i=i+5000) begin
     amp_in = i;
     #100 reset_n = ~reset_n;
-    #4000000;
+    #2000000;
     reset_n = 1'b0;
 end
 //#1500  reset_n = ~reset_n;
