@@ -1,3 +1,4 @@
+`timescale 1ns / 1ps
 `define MAX_DIFF_WIDTH 96 //assuming the input difference is at 64 bits as maximum
 module custonmized_add_sub #
 (

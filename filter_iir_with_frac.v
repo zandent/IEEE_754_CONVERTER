@@ -25,6 +25,7 @@ module filter_iir_with_frac #
     parameter word_length_y
 )( 
     input clk,
+    input reset_n,
     input [word_length_x + 7 : 0] x,
     output [word_length_y + 7 : 0] y
     ); 
@@ -41,8 +42,9 @@ module filter_iir_with_frac #
         .coef_a (32'h40000000 ),// 2
         .coef_b (32'hc77ffc00 ), //-65532
         .clk    (clk    ),
+        .reset_n(reset_n),
         .y      (y      )
     );
-    
+
 
 endmodule

@@ -27,10 +27,14 @@ module customized_delay #
 )(
     
     input clk,
+    input reset_n,
     input [montissa_length + 8 : 0] in,
     output reg [montissa_length + 8: 0] out
 );
     initial out = 0;
-    always @(posedge clk)
+    always @(posedge clk or negedge reset_n)
+        if(!reset_n)
+        out <= 0;
+        else
         out <= in;
 endmodule

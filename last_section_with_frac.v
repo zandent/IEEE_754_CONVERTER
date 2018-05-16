@@ -31,6 +31,7 @@ module last_section_with_frac #
     input [word_length_coef_a + 7 : 0]coef_a, 
     input [word_length_coef_b + 7 : 0]coef_b,
     input clk,
+    input reset_n,
     output [word_length_y + 7 : 0] y
     );
     wire [word_length_y + 7 : 0] a_1,a_2,b_1,b_2,e,f;
@@ -121,6 +122,7 @@ module last_section_with_frac #
     )
     u_customized_delay(
     	.clk (clk ),
+        .reset_n(reset_n),
         .in  (e ),
         .out (f )
     );

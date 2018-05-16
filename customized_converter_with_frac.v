@@ -1,3 +1,4 @@
+`timescale 1ns / 1ps
 //not necessary to customize (expend) exponent width, useless to improve precision
 //exponent width is still 8 bits, in order to precision, recommand montissa width is no longer than 128 bits
 module customized_converter_with_frac # 

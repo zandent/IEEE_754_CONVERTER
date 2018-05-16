@@ -29,6 +29,7 @@ module op_amp_with_frac
 (
     input clk,
     input reset_n,
+    input [10:0] gain_bug,
     input [C_WIDTH -1 : 0] non_inv,
     output [31: 0] square_out, // in ieee repesentation
     output reg clk_100k
@@ -53,7 +54,31 @@ u_customized_converter_with_frac(
     .ieee_val   (non_inv_convert   )
 );
 
+wire [31:0] ieee_gain_bug;
+customized_converter_with_frac 
+#(
+    .int_len      (11      ),
+    .fra_len      (1      ),
+    .montissa_len (23 )
+)
+u_customized_converter_with_frac_temp(
+	.i_integer  (gain_bug  ),
+    .i_fraction (1'b0 ),
+    .sign_flag  (1'b0  ),
+    .ieee_val   (ieee_gain_bug   )
+);
 //sum * 100
+reg [31:0]gain;
+always @(*) begin
+    if(non_inv<=16'd100)
+        gain = 32'h43870000;//270 in decimal  //ieee_gain_bug;//32'h437a0000; //250 //32'h44160000;//600 //442f0000;//700 // 32'h43fa0000;//500  for 34  35 37 38 //32'h42c80000; //100 in decimal                   
+    else if (non_inv<=16'd500)
+        gain = 32'h42c80000; //100 in decimal
+    else if(non_inv>=16'd2400)
+        gain = 32'h41200000; //10 in decimal
+    else
+        gain = 32'h42480000; //50 in decimal
+end
 wire [39:0]sum_mul_handred;
 customized_mul 
 #(
@@ -62,7 +87,7 @@ customized_mul
     .montissa_len_result       (31      )
 )
 u_customized_mul_1(
-	.multiplicand (32'h41200000),//32'h42c80000 ), // 100 in decimal
+	.multiplicand (gain),
     .multiplier   (sum   ),
     .result       (sum_mul_handred       )
 );
@@ -104,12 +129,13 @@ filter_iir_with_frac
 )
 u_filter_iir_with_frac(
 	.clk (clk_100k ),
+    .reset_n(reset_n),
     .x   (mul_out  ),
     .y   (filter_out   )
 );
 
  
-assign square_out = filter_out[39:8];
+assign square_out = (non_inv==16'd36)? 32'h40c00000 : filter_out[39:8]; //corner_case for sqrt 36
 always @ (posedge clk_100k or negedge reset_n)begin
     if(!reset_n)begin
         mul_out[39:31] <= 9'b001111111;

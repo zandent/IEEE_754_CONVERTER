@@ -1,3 +1,4 @@
+`timescale 1ns / 1ps
 module customized_mul #
 (
     parameter montissa_len_multiplicand,
