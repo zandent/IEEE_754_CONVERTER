@@ -82,13 +82,10 @@ for (integer i = 1; i<=448; i++) begin
     $display("iteration %d init success", i);
     #100 reset_n = ~reset_n;
     #4000000;
+    $display("processing success, print value if failed");
     for (integer n=0; n<128; n++) begin
-        if(n<5 || n>120) begin
             if(counter_detect_stable[n] < 20)
                 $display("UNSTABLE for %d, output is %h", amp_in[n], amp_out[n]);
-            else
-                $display("stable for %d, output is %h", amp_in[n], amp_out[n]);
-        end
     end
     reset_n = 1'b0;
 end
