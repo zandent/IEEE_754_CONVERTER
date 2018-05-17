@@ -1,5 +1,6 @@
 # IEEE_754_CONVERTER
-The modules suppiles the convertion from integer with fractions to IEEE_754 represetation, including multiply, add and substarct
-for IEEE 754 numbers
-
-More generally, the "customized" modules provides the algorithm for any bit width montissa (increase significant bits) so that improve precision
+## Objectives
+The main purpose of the project is to convert to customized floating point represetation using given interger part and fraction part.
+## Details
+### Basics
+Following IEEE 754 repeseatation (https://en.wikipedia.org/wiki/IEEE_754),  
