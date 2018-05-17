@@ -11,3 +11,4 @@ last_section.v
 work
 vsim.wlf
 transcript
+vish_stacktrace.vstf
