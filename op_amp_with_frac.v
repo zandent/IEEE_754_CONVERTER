@@ -136,7 +136,8 @@ u_filter_iir_with_frac(
 );
 
  
-assign square_out = (non_inv==16'd36)? 32'h40c00000 : filter_out[39:8]; //corner_case for sqrt 36
+assign square_out = filter_out[39:8];
+//(non_inv==16'd36)? 32'h40c00000 : filter_out[39:8]; //corner_case for sqrt 36
 always @ (posedge clk_100k or negedge reset_n)begin
     if(!reset_n)begin
         mul_out[39:31] <= 9'b001111111;

@@ -24,61 +24,7 @@ module phase_detection_tb();
 
 reg reset_n;
 reg clk;
-
-//integer file;
-
-/*phase_detection DUT
-(
-    .clk            (clk),
-    .reset_n        (reset_n),
-    .TEST_SIG       (TEST_SIG),
-    .REF_SINE       (REF_SINE),
-    .test_out       (test_out),
-    .valid          (valid)
-);*/
-/*
-dds_compiler_2 reference(
-   .aclk                (clk),
-   .m_axis_data_tvalid  (),
-   .m_axis_data_tdata   (REF_SINE)
-   //.m_axis_data_tdata   (TEST_SIG),
-   //.m_axis_phase_tdata   (),
-   //.m_axis_phase_tvalid  ()
-);
-
-dds_compiler_1 test(
-   .aclk                (clk),
-   .s_axis_phase_tvalid (valid),
-   .m_axis_data_tvalid  (),
-   .m_axis_data_tdata   (TEST_SIG),
-   //.m_axis_data_tdata   (REF_SINE),
-   .s_axis_phase_tdata  (POFF     )
-);*/
-
-
-/*cordic_0 sqroot
-(
-    .aclk                       (clk),
-    .s_axis_cartesian_tvalid    (valid),
-    //.s_axis_cartesian_tdata     (mul_out),
-    .s_axis_cartesian_tdata     (mul_test),
-    .m_axis_dout_tdata          (square_out)
-);
-
-mult_gen_1 mul_two
-(
-    .CLK    (clk),
-    .A      (divisor),
-    .B      (filter_out),
-    .P      (mul_out)
-);*/
-
 wire clk_100k;
-/*filter_iir lowpass(
-    .clk    (clk_100k),
-    .x      (REF_SINE),
-    .y      (filter_out)
-);*/
 reg [15:0]amp_in;
 wire [31:0]amp_out;
 reg [10:0] gain_bug;
@@ -98,67 +44,59 @@ always begin
     #5 clk = ~clk;
 end
 
-    
+reg [9:0] counter_detect_stable;
+reg [31:0]amp_out_reg;
+always @ (posedge clk_100k or negedge reset_n) begin
+    if(~reset_n) begin
+        counter_detect_stable <= 0;
+        amp_out_reg <= amp_out;
+    end
+    else begin
+        if(amp_out_reg==amp_out)
+           counter_detect_stable <= counter_detect_stable + 1'b1;
+        amp_out_reg <= amp_out;
+    end
 
-/*always @(posedge clk) begin
-    POFF = POFF + 16'd1820;
-end*/
-
+end
 initial begin
 clk =1'b0;
 reset_n = 1'b0;
 
-/*amp_in = 16'd36;
-#30  reset_n = ~reset_n;
-#4000000;
-reset_n = 1'b0;
-*/
-//for (integer j = 270; j<271; j=j+1) begin
-//gain_bug = j;
-for (integer i = 7; i<113; i=i+10) begin
+
+for (integer i = 1; i<100; i=i+1) begin
+    amp_in = i;
+    #100 reset_n = ~reset_n;
+    #2000000;
+    if(counter_detect_stable < 20)
+        $display("UNSTABLE for %d, output is %h", amp_in, amp_out);
+    reset_n = 1'b0;
+end
+for (integer i = 100; i<500; i=i+1) begin
+    amp_in = i;
+    #100 reset_n = ~reset_n;
+    #2000000;
+    if(counter_detect_stable < 20)
+        $display("UNSTABLE for %d, output is %h", amp_in, amp_out);
+    reset_n = 1'b0;
+end
+for (integer i = 500; i<2400; i=i+1) begin
+    amp_in = i;
+    #100 reset_n = ~reset_n;
+    #2000000;
+    if(counter_detect_stable < 20)
+        $display("UNSTABLE for %d, output is %h", amp_in, amp_out);
+    reset_n = 1'b0;
+end 
+
+for (integer i = 2400; i<65536; i=i+1) begin
     amp_in = i;
     #100 reset_n = ~reset_n;
     #4000000;
+    if(counter_detect_stable < 20)
+        $display("UNSTABLE for %d, output is %h", amp_in, amp_out);
     reset_n = 1'b0;
 end
-//#100;
-//end
-for (integer i = 93; i<600; i=i+100) begin
-    amp_in = i;
-    #100 reset_n = ~reset_n;
-    #2000000;
-    reset_n = 1'b0;
-end
-for (integer i = 400; i<2500; i=i+300) begin
-    amp_in = i;
-    #100 reset_n = ~reset_n;
-    #2000000;
-    reset_n = 1'b0;
-end
-
-for (integer i = 2200; i<65535; i=i+5000) begin
-    amp_in = i;
-    #100 reset_n = ~reset_n;
-    #2000000;
-    reset_n = 1'b0;
-end
-//#1500  reset_n = ~reset_n;
-
 $stop();
-
 end
-
-
-
-/*integer j;
-initial begin
-    for(j=0; j <= 1910; j = j + 1)begin
-        #500000 FREQ <= FREQ + 5;
-    end
-end*/
-/*always @(posedge clk)begin
-    $fwrite(file,"%d \n",refsine);
-    //$fclose(file);
-end*/
 
 endmodule
