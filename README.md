@@ -1,4 +1,4 @@
-# IEEE_754_CONVERTER
+# CUSTOMIZED FLOATING POINT REPRESENTATION
 ## Objectives
 The main purpose of the project is to convert and process customized floating point representation using given interger part and fraction part, such as add, substarct and multiply in hardware implementation.
 ## Details
