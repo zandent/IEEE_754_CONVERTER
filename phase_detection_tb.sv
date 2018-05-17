@@ -96,6 +96,14 @@ for (integer i = 2400; i<65536; i=i+1) begin
         $display("UNSTABLE for %d, output is %h", amp_in, amp_out);
     reset_n = 1'b0;
 end
+/*
+amp_in = 61954;
+#100 reset_n = ~reset_n;
+#4000000;
+if(counter_detect_stable < 20)
+$display("UNSTABLE for %d, output is %h", amp_in, amp_out);
+else
+$display("stable for %d, output is %h", amp_in, amp_out);*/
 $stop();
 end
 

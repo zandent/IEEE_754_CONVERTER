@@ -20,18 +20,18 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module phase_detection_tb();
+module tb();
 
 reg reset_n;
 reg clk;
 wire clk_100k;
-reg [15:0] amp_in[9:0];
-wire [31:0]amp_out[9:0];
+reg [15:0] amp_in[127:0];
+wire [31:0]amp_out[127:0];
 reg [10:0] gain_bug;
 
 genvar j;
 generate 
-    for (j=0;j<1024;j++) begin: module_assign
+    for (j=0;j<128;j++) begin: module1_assign
         op_amp_with_frac opamp
         (
             .clk            (clk),
@@ -50,20 +50,20 @@ always begin
     #5 clk = ~clk;
 end
 
-reg [9:0] counter_detect_stable[9:0];
-reg [31:0] amp_out_reg[9:0];
-genvar j;
+reg [9:0] counter_detect_stable[127:0];
+reg [31:0] amp_out_reg[127:0];
+genvar k;
 generate 
-    for (j=0;j<1024;j++) begin: module_assign
+    for (k=0;k<128;k++) begin: module2_assign
         always @ (posedge clk_100k or negedge reset_n) begin
             if(~reset_n) begin
-                counter_detect_stable[j] <= 0;
-                amp_out_reg[j] <= amp_out[j];
+                counter_detect_stable[k] <= 0;
+                amp_out_reg[k] <= amp_out[k];
             end
             else begin
-                if(amp_out_reg[j]==amp_out[j])
-                counter_detect_stable[j] <= counter_detect_stable[j] + 1'b1;
-                amp_out_reg[j] <= amp_out[j];
+                if(amp_out_reg[k]==amp_out[k])
+                counter_detect_stable[k] <= counter_detect_stable[k] + 1'b1;
+                amp_out_reg[k] <= amp_out[k];
             end
 
         end
@@ -75,41 +75,33 @@ initial begin
 clk =1'b0;
 reset_n = 1'b0;
 
-
-for (integer i = 1; i<100; i=i+1) begin
-    amp_in = i;
-    #100 reset_n = ~reset_n;
-    #2000000;
-    if(counter_detect_stable < 20)
-        $display("UNSTABLE for %d, output is %h", amp_in, amp_out);
-    reset_n = 1'b0;
-end
-for (integer i = 100; i<500; i=i+1) begin
-    amp_in = i;
-    #100 reset_n = ~reset_n;
-    #2000000;
-    if(counter_detect_stable < 20)
-        $display("UNSTABLE for %d, output is %h", amp_in, amp_out);
-    reset_n = 1'b0;
-end
-for (integer i = 500; i<2400; i=i+1) begin
-    amp_in = i;
-    #100 reset_n = ~reset_n;
-    #2000000;
-    if(counter_detect_stable < 20)
-        $display("UNSTABLE for %d, output is %h", amp_in, amp_out);
-    reset_n = 1'b0;
-end 
-
-for (integer i = 2400; i<65536; i=i+1) begin
-    amp_in = i;
+for (integer i = 1; i<=448; i++) begin
+    for (integer m=0; m<128; m++) begin
+        amp_in[m] = i+m*448+8192;
+    end
+    $display("iteration %d init success", i);
     #100 reset_n = ~reset_n;
     #4000000;
-    if(counter_detect_stable < 20)
-        $display("UNSTABLE for %d, output is %h", amp_in, amp_out);
+    for (integer n=0; n<128; n++) begin
+        if(n<5 || n>120) begin
+            if(counter_detect_stable[n] < 20)
+                $display("UNSTABLE for %d, output is %h", amp_in[n], amp_out[n]);
+            else
+                $display("stable for %d, output is %h", amp_in[n], amp_out[n]);
+        end
+    end
     reset_n = 1'b0;
 end
+
 $stop();
 end
 
 endmodule
+/*
+vlog *.v *.sv
+vsim -novopt tb
+run -all
+vlog *.v *.sv
+restart -f
+run -all
+*/
