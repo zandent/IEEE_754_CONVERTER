@@ -58,12 +58,26 @@ always @ (posedge clk_100k or negedge reset_n) begin
     end
 
 end
+
+
+reg [255:0] counter_detect_unstable;
+always @ (posedge clk_100k or negedge reset_n) begin
+    if(~reset_n) begin
+        counter_detect_unstable <= 0;
+    end
+    else begin
+           counter_detect_unstable <= counter_detect_unstable + 1'b1;
+    end
+
+end
+
+
+
 initial begin
 clk =1'b0;
 reset_n = 1'b0;
-
-
-for (integer i = 1; i<100; i=i+1) begin
+/*
+for (integer i = 1; i<100; i=i+10) begin
     amp_in = i;
     #100 reset_n = ~reset_n;
     #2000000;
@@ -71,7 +85,7 @@ for (integer i = 1; i<100; i=i+1) begin
         $display("UNSTABLE for %d, output is %h", amp_in, amp_out);
     reset_n = 1'b0;
 end
-for (integer i = 100; i<500; i=i+1) begin
+for (integer i = 100; i<500; i=i+100) begin
     amp_in = i;
     #100 reset_n = ~reset_n;
     #2000000;
@@ -79,7 +93,7 @@ for (integer i = 100; i<500; i=i+1) begin
         $display("UNSTABLE for %d, output is %h", amp_in, amp_out);
     reset_n = 1'b0;
 end
-for (integer i = 500; i<2400; i=i+1) begin
+for (integer i = 500; i<2400; i=i+100) begin
     amp_in = i;
     #100 reset_n = ~reset_n;
     #2000000;
@@ -88,22 +102,22 @@ for (integer i = 500; i<2400; i=i+1) begin
     reset_n = 1'b0;
 end 
 
-for (integer i = 2400; i<65536; i=i+1) begin
+for (integer i = 2400; i<65536; i=i+5000) begin
     amp_in = i;
     #100 reset_n = ~reset_n;
     #4000000;
     if(counter_detect_stable < 20)
         $display("UNSTABLE for %d, output is %h", amp_in, amp_out);
     reset_n = 1'b0;
-end
-/*
-amp_in = 61954;
+end*/
+
+amp_in = 2400;
 #100 reset_n = ~reset_n;
 #4000000;
 if(counter_detect_stable < 20)
 $display("UNSTABLE for %d, output is %h", amp_in, amp_out);
 else
-$display("stable for %d, output is %h", amp_in, amp_out);*/
+$display("stable for %d, output is %h", amp_in, amp_out);
 $stop();
 end
 
