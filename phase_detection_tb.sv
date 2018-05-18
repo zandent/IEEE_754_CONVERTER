@@ -111,7 +111,7 @@ for (integer i = 2400; i<65536; i=i+5000) begin
     reset_n = 1'b0;
 end*/
 
-amp_in = 2400;
+amp_in = 36;
 #100 reset_n = ~reset_n;
 #4000000;
 if(counter_detect_stable < 20)
