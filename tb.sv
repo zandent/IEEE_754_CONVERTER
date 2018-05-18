@@ -70,11 +70,11 @@ generate
     end
 endgenerate
 
-
+integer f;
 initial begin
 clk =1'b0;
 reset_n = 1'b0;
-
+f = $fopen("output.txt","w");
 for (integer i = 1; i<=448; i++) begin
     for (integer m=0; m<128; m++) begin
         amp_in[m] = i+m*448+8192;
@@ -83,13 +83,15 @@ for (integer i = 1; i<=448; i++) begin
     #100 reset_n = ~reset_n;
     #4000000;
     $display("processing success, print value if failed");
-    for (integer n=0; n<128; n++) begin
-            if(counter_detect_stable[n] < 20)
+    for (integer n=0; n<128; n++) begin        
+            if(counter_detect_stable[n] < 20) begin
                 $display("UNSTABLE for %d, output is %h", amp_in[n], amp_out[n]);
+                $fwrite(f,"UNSTABLE for %d, output is %h \n", amp_in[n], amp_out[n]  );
+            end      
     end
     reset_n = 1'b0;
 end
-
+$fclose(f); 
 $stop();
 end
 
