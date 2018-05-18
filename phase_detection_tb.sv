@@ -28,6 +28,7 @@ wire clk_100k;
 reg [15:0]amp_in;
 wire [31:0]amp_out;
 reg [10:0] gain_bug;
+wire [15:0] o_int_frac;
 
 op_amp_with_frac opamp
 (
@@ -36,7 +37,8 @@ op_amp_with_frac opamp
     //.gain_bug       (gain_bug),
     .non_inv        (amp_in),
     .square_out     (amp_out),
-    .clk_100k       (clk_100k)
+    .clk_100k       (clk_100k),
+    .o_int_frac     (o_int_frac)
 );
 
 
@@ -111,7 +113,7 @@ for (integer i = 2400; i<65536; i=i+5000) begin
     reset_n = 1'b0;
 end*/
 
-amp_in = 36;
+amp_in = 63478;
 #100 reset_n = ~reset_n;
 #4000000;
 if(counter_detect_stable < 20)

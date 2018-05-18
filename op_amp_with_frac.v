@@ -32,8 +32,11 @@ module op_amp_with_frac
     //input [10:0] gain_bug,
     input [C_WIDTH -1 : 0] non_inv,
     output [31: 0] square_out, // in ieee repesentation
-    output reg clk_100k
+    output reg clk_100k,
+    output [15:0] o_int_frac
 );
+wire [7:0] o_frac;
+wire [7:0] o_int;
 reg [39 : 0] mul_out; //32 wl
 reg [32 : 0] sum; //25wl
 reg [71 : 0] square; //64wl
@@ -151,6 +154,13 @@ always @ (posedge clk_100k or negedge reset_n)begin
     end
 end
 
+int_frac_converter u_int_frac_converter(
+	.ieee_val (square_out ),
+    .int      (o_int      ),
+    .frac     (o_frac     )
+);
+
+assign o_int_frac = {o_int, o_frac};
 
 reg [9:0]counter2;
 
